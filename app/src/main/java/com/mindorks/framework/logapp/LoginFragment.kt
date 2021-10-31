@@ -10,6 +10,10 @@ import androidx.fragment.app.Fragment
 import com.mindorks.framework.logapp.com.mindorks.framework.logapp.ClientUtil
 import com.mindorks.framework.logapp.com.mindorks.framework.logapp.MVPContract
 import com.mindorks.framework.logapp.databinding.FragmentLoginBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.math.BigInteger
 import java.security.MessageDigest
 
@@ -17,13 +21,19 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
+    private var job = SupervisorJob()
+    private val ioScope = CoroutineScope(Dispatchers.IO + job)
+    private val mainScope = CoroutineScope(Dispatchers.Main + job)
+
     private val address = "localhost"
     private val port = 9999
     private lateinit var client: ClientUtil
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
-        client = ClientUtil(address, port, this)
+
+                client = ClientUtil(address, port, this)
+
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,7 +47,11 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
 
 
                 //binding.textView.text = hash(binding.passwordEditController.text.toString())
-                client.run(binding.userNameEditController.text.toString())
+                mainScope.launch {
+                    ioScope.launch {
+                        client.run(binding.userNameEditController.text.toString())
+                    }.join()
+                }
                 //Toast.makeText(context, "Log in was enabled", Toast.LENGTH_SHORT).show()
             }
         }
