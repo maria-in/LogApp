@@ -5,14 +5,12 @@ import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.mindorks.framework.logapp.com.mindorks.framework.logapp.ClientUtil
 import com.mindorks.framework.logapp.com.mindorks.framework.logapp.MVPContract
 import com.mindorks.framework.logapp.databinding.FragmentLoginBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.math.BigInteger
 import java.security.MessageDigest
 
@@ -54,6 +52,7 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
                         e.printStackTrace()
                     }
                 }.join()
+                Toast.makeText(requireContext(), "toast on main thread", Toast.LENGTH_SHORT).show()
             }
             //Toast.makeText(context, "Log in was enabled", Toast.LENGTH_SHORT).show()
 //            }

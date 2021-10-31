@@ -21,13 +21,16 @@ class ClientUtil(address: String, port: Int, loginView: MVPContract.LoginView) {
         //thread { read() }
         while (connected) {
             //val input = readLine() ?: ""
-            if ("exit" in input) {
-                connected = false
-                reader.close()
-                connection.close()
-            } else {
-                write(input)
-            }
+//            if ("exit" in input) {
+//                connected = false
+//                reader.close()
+//                connection.close()
+//            } else {
+            write(input)
+            connected = false
+            reader.close()
+            connection.close()
+//            }
         }
 
     }
