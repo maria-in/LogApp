@@ -24,7 +24,8 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
     private val ioScope = CoroutineScope(Dispatchers.IO + job)
     private val mainScope = CoroutineScope(Dispatchers.Main + job)
 
-    private val address = "localhost"
+    // TODO("Change to Server IP")
+    private val address = "192.168.100.218"
     private val port = 9999
     private lateinit var client: ClientUtil
 
@@ -42,16 +43,20 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
         StrictMode.setThreadPolicy(policy)
 
         binding.logInButton.setOnClickListener {
-            if (validFields()) {
-                //binding.textView.text = hash(binding.passwordEditController.text.toString())
-                mainScope.launch {
-                    ioScope.launch {
+//            if (validFields()) {
+            //binding.textView.text = hash(binding.passwordEditController.text.toString())
+            mainScope.launch {
+                ioScope.launch {
+                    try {
                         client = ClientUtil(address, port, this@LoginFragment)
                         client.run(binding.userNameEditController.text.toString())
-                    }.join()
-                }
-                //Toast.makeText(context, "Log in was enabled", Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }.join()
             }
+            //Toast.makeText(context, "Log in was enabled", Toast.LENGTH_SHORT).show()
+//            }
         }
     }
 
@@ -89,6 +94,8 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
     }
 
     override fun showName(name: String) {
-        binding.textView.text = "Имя клиента $name"
+        mainScope.launch {
+            binding.textView.text = "Имя клиента $name"
+        }
     }
 }
