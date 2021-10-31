@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.mindorks.framework.logapp.com.mindorks.framework.logapp.ClientUtil
 import com.mindorks.framework.logapp.databinding.FragmentLoginBinding
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -14,7 +14,13 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
+    private val address = "localhost"
+    private val port = 9999
+    private val client = ClientUtil(address, port)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
+
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -24,8 +30,10 @@ class LoginFragment : Fragment() {
 
         binding.logInButton.setOnClickListener{
             if(validFields()) {
-                binding.textView.text = hash(binding.passwordEditController.text.toString())
-                Toast.makeText(context, "Log in was enabled", Toast.LENGTH_SHORT).show()
+
+                //binding.textView.text = hash(binding.passwordEditController.text.toString())
+                client.run(binding.userNameEditController.text.toString())
+                //Toast.makeText(context, "Log in was enabled", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -58,6 +66,11 @@ class LoginFragment : Fragment() {
             binding.passwordEdit.error = null
         }
         return valid
+    }
+
+    companion object {
+        val SERVERPORT = 3003
+        val SERVER_IP = "10.1.10.108"
     }
 
 }
