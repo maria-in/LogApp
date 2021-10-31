@@ -4,5 +4,4 @@ interface MVPContract {
     interface LoginView {
         fun showName(name: String)
     }
-
 }

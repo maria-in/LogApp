@@ -1,6 +1,5 @@
 package com.mindorks.framework.logapp
 
-import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.LayoutInflater
@@ -29,11 +28,11 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
     private val port = 9999
     private lateinit var client: ClientUtil
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-
-
-                client = ClientUtil(address, port, this)
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,13 +41,12 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        binding.logInButton.setOnClickListener{
-            if(validFields()) {
-
-
+        binding.logInButton.setOnClickListener {
+            if (validFields()) {
                 //binding.textView.text = hash(binding.passwordEditController.text.toString())
                 mainScope.launch {
                     ioScope.launch {
+                        client = ClientUtil(address, port, this@LoginFragment)
                         client.run(binding.userNameEditController.text.toString())
                     }.join()
                 }
@@ -68,20 +66,18 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
         _binding = null
     }
 
-    private fun validFields(): Boolean{
+    private fun validFields(): Boolean {
         var valid = true
-        if (binding.userNameEditController.text.isNullOrEmpty()){
+        if (binding.userNameEditController.text.isNullOrEmpty()) {
             binding.userNameEdit.error = "Введите имя пользователя"
             valid = false
-        }
-        else {
+        } else {
             binding.userNameEdit.error = null
         }
-        if (binding.passwordEditController.text.isNullOrEmpty()){
+        if (binding.passwordEditController.text.isNullOrEmpty()) {
             binding.passwordEdit.error = "Введите пароль"
             valid = false
-        }
-        else {
+        } else {
             binding.passwordEdit.error = null
         }
         return valid
@@ -95,5 +91,4 @@ class LoginFragment : Fragment(), MVPContract.LoginView {
     override fun showName(name: String) {
         binding.textView.text = "Имя клиента $name"
     }
-
 }
