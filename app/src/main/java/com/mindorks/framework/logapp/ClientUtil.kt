@@ -2,10 +2,10 @@ package com.mindorks.framework.logapp.com.mindorks.framework.logapp
 
 import java.io.OutputStream
 import java.net.Socket
-import java.nio.charset.Charset
 import java.util.*
 
-class ClientUtil(address: String, port: Int) {
+class ClientUtil(address: String, port: Int, loginView: MVPContract.LoginView) {
+    private var loginView: MVPContract.LoginView = loginView
 
     private val connection: Socket = Socket(address, port)
     private var connected: Boolean = true
@@ -33,7 +33,8 @@ class ClientUtil(address: String, port: Int) {
     }
 
     private fun write(message: String) {
-        writer.write((message + '\n').toByteArray(Charset.defaultCharset()))
+        loginView.showName(message)
+        //writer.write((message + '\n').toByteArray(Charset.defaultCharset()))
     }
 
     private fun read() {
